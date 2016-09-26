@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 public class BaseController {
 
-	@ModelAttribute
-	public void setReqAndRes111(HttpServletRequest request,
-							 HttpServletResponse response, Model model) {
-	}
+
 	/**
-	 * 初始化1111
+	 * 初始化
 	 **/
 	@ModelAttribute
 	public void setReqAndRes(HttpServletRequest request,
