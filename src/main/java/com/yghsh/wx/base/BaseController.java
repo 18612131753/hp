@@ -10,7 +10,7 @@ public class BaseController {
 
 
 	/**
-	 * 初始化，，
+	 * 初始化
 	 **/
 	@ModelAttribute
 	public void setReqAndRes(HttpServletRequest request,
