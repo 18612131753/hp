@@ -13,7 +13,7 @@ public class BaseController {
 							 HttpServletResponse response, Model model) {
 	}
 	/**
-	 * 初始化
+	 * 初始化1111
 	 **/
 	@ModelAttribute
 	public void setReqAndRes(HttpServletRequest request,
