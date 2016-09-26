@@ -16,17 +16,14 @@ public class BaseController {
 	public void setReqAndRes(HttpServletRequest request,
 			HttpServletResponse response, Model model) {
 
-
 	}
 
 	public String getBasePath(HttpServletRequest request) {
 		String path = request.getContextPath();
 		int port = request.getServerPort();
-		String basePath1 = request.getScheme() + "://" + request.getServerName()
+		String basePath = request.getScheme() + "://" + request.getServerName()
 				+ (port == 80 ? "" : (":" + request.getServerPort())) + path
 				+ "/";
-		return basePath1;
+		return basePath;
 	}
-
-
 }
