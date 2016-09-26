@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 public class BaseController {
 
-
+	@ModelAttribute
+	public void setReqAndRes111(HttpServletRequest request,
+							 HttpServletResponse response, Model model) {
+	}
 	/**
 	 * 初始化
 	 **/
@@ -22,10 +25,10 @@ public class BaseController {
 	public String getBasePath(HttpServletRequest request) {
 		String path = request.getContextPath();
 		int port = request.getServerPort();
-		String basePath = request.getScheme() + "://" + request.getServerName()
+		String basePath1 = request.getScheme() + "://" + request.getServerName()
 				+ (port == 80 ? "" : (":" + request.getServerPort())) + path
 				+ "/";
-		return basePath;
+		return basePath1;
 	}
 
 
