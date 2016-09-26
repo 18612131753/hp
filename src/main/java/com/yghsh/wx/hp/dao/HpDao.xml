@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yghsh.wx.hp.dao.HpDao">
+
+	<sql id="findModelTrain_page">
+		ORDER BY ${form.sidx} ${form.sord}
+		limit ${(form.page-1)*form.rows},${form.rows*form.page}
+	</sql>
+	<sql id="all_form">
+		<if test="form.searchField!=null and form.searchField!=''">
+			<if test="form.searchOper == 'eq'">
+				AND mt.${form.searchField} = #{form.searchString}
+			</if>
+			<if test="form.searchOper == 'ne'">
+				AND mt.${form.searchField} != #{form.searchString}
+			</if>
+			<if test="form.searchOper == 'bw'">
+				AND mt.${form.searchField} like CONCAT('','${form.searchString}','%' )
+			</if>
+			<if test="form.searchOper == 'bn'">
+				AND mt.${form.searchField} not like CONCAT('','${form.searchString}','%' )
+			</if>
+			<if test="form.searchOper == 'ew'">
+				AND mt.${form.searchField} like CONCAT('%','${form.searchString}','' )
+			</if>
+			<if test="form.searchOper == 'en'">
+				AND mt.${form.searchField} not like CONCAT('%','${form.searchString}','' )
+			</if>
+			<if test="form.searchOper == 'cn'">
+				AND mt.${form.searchField} like CONCAT('%','${form.searchString}','%' )
+			</if>
+			<if test="form.searchOper == 'nc'">
+				AND mt.${form.searchField} not like CONCAT('%','${form.searchString}','%' )
+			</if>
+			<if test="form.searchOper == 'nu'">
+				AND mt.${form.searchField} is null
+			</if>
+			<if test="form.searchOper == 'nn'">
+				AND mt.${form.searchField} is not null
+			</if>
+			<if test="form.searchOper == 'in'">
+				AND mt.${form.searchField} in (${form.searchString})
+			</if>
+			<if test="form.searchOper == 'ni'">
+				AND mt.${form.searchField} not in (${form.searchString})
+			</if>
+		</if>
+	</sql>
+<!-- 模型训练 statr -->
+	<sql id="findModelTrain_ConditionSQL">
+		FROM hp_modelTraining mt
+		left join hp_model_prediction hmp on mt.jobid=hmp.jobid
+		WHERE 1=1
+		<include refid="all_form"/>
+	</sql>
+	<select id="findModelTrain" resultType="com.yghsh.wx.hp.model.HpModelTraining">
+		SELECT mt.* , hmp.modelAccuracy
+		<include refid="findModelTrain_ConditionSQL"/>
+		<include refid="findModelTrain_page"/>
+	</select>
+	<select id="findModelTrainCount" resultType="Integer">
+		SELECT count(1)
+		<include refid="findModelTrain_ConditionSQL"/>
+	</select>
+<!-- 模型训练 end -->
+
+<!-- 训练结果 statr -->
+	<sql id="findModelTrainResult_ConditionSQL">
+		from hp_test_prediction mt
+		left join hp_label_index l on mt.label=l.label and l.jobid=#{form.jobid}
+		where mt.jobid=#{form.jobid}
+	</sql>
+	<select id="findModelTrainResult" resultType="com.yghsh.wx.hp.model.HpModelTrainingResult">
+		SELECT mt.*,l.group as newgroup
+		<include refid="findModelTrainResult_ConditionSQL"/>
+		<include refid="findModelTrain_page"/>
+	</select>
+	<select id="findModelTrainResultCount" resultType="Integer">
+		SELECT count(1)
+		<include refid="findModelTrainResult_ConditionSQL"/>
+	</select>
+<!-- 训练结果 end -->
+
+<!-- 数据分类 statr -->
+	<sql id="findDataAnalusis_ConditionSQL">
+		FROM hp_dataanalysis mt
+		WHERE 1=1
+		<include refid="all_form"/>
+	</sql>
+	<select id="findDataAnalysis" resultType="com.yghsh.wx.hp.model.HpDataAnalysis">
+		SELECT mt.*
+		<include refid="findDataAnalusis_ConditionSQL"/>
+		<include refid="findModelTrain_page"/>
+	</select>
+	<select id="findDataAnalysisCount" resultType="Integer">
+		SELECT count(1)
+		<include refid="findDataAnalusis_ConditionSQL"/>
+	</select>
+<!-- 数据分类 end -->
+</mapper>

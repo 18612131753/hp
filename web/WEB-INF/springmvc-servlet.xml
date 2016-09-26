@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/aop
+		   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/mvc 
+           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"  default-autowire="byName"
+>
+
+	<!-- 静态路径 -->
+	<mvc:resources mapping="/html/**" location="/html/" />
+	<mvc:resources mapping="/script/**" location="/script/" />
+	
+	<!--  在Spring3.0.5这个版本上，<mvc:annotation-driven/>声明是没有 defaultAnnotationHandlerMapping这个属性的
+	<mvc:annotation-driven />
+	 -->
+
+	<!-- springMVC拦截器，启用基于注解的处理器映射，添加拦截器，类级别的处理器映射 -->
+	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <bean class="com.yghsh.wx.base.SpringMVCFliterInterceptor"/>
+            </list>
+        </property>
+	</bean>
+	
+	<!-- 默认解决springMVC@responsebody的中文乱码问题 -->  
+	<bean id="handlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+		<property name="messageConverters">
+	        <list>
+	            <bean id="utf8StringHttpMessageConverter" class="com.yghsh.wx.base.UTF8StringHttpMessageConverter" />
+	        </list>
+	    </property>
+	</bean>
+	
+	<!--
+		扫描所有的controller 但是不扫描service 
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	-->
+	<context:component-scan base-package="com.yghsh.wx">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+	<!-- 自定义标签  -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>
