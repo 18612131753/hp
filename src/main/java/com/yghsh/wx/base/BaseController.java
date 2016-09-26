@@ -16,6 +16,7 @@ public class BaseController {
 	public void setReqAndRes(HttpServletRequest request,
 			HttpServletResponse response, Model model) {
 
+
 	}
 
 	public String getBasePath(HttpServletRequest request) {
